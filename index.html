@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midrand Arts, Culture & Heritage Forum | NPO</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js for lightweight interactions -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#08556B',       /* Deep Teal from logo border */
+                            terracotta: '#B25329',   /* Earthy Orange/Brown from flyer headers */
+                            gold: '#DF9E28',         /* Warm Gold from drum details/mask */
+                            cream: '#FAF6F0',        /* Cream Background from flyers */
+                            dark: '#1C292E',         /* Deep text contrast */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-brand-cream text-brand-dark font-sans selection:bg-brand-teal selection:text-white" x-data="{ mobileMenu: false, pledgeModal: false, selectedTier: '', pledgeAmount: 1000 }">
+
+    <!-- TOP ANNOUNCEMENT FOR FUNDERS -->
+    <div class="bg-brand-teal text-white text-xs md:text-sm py-2 px-4 text-center font-medium tracking-wide">
+        🌟 South African Registered NPO (078-332) • Section 18A Tax Exemption certificates available for corporate funders.
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-brand-cream/90 backdrop-blur-md border-b border-brand-teal/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo & Brand Name -->
+            <a href="#" class="flex items-center gap-3 group">
+                <!-- Custom SVG recreating the Drum Logo from flyer -->
+                <div class="w-12 h-12 rounded-full border-2 border-brand-teal flex items-center justify-center bg-white shadow-sm group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 100 100" class="w-9 h-9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Teal Circle Outline inside -->
+                        <circle cx="50" cy="50" r="42" stroke="#08556B" stroke-width="2"/>
+                        <!-- Drum Base/Stand (Terracotta) -->
+                        <path d="M40 75 L60 75 L55 58 L45 58 Z" fill="#B25329" stroke="#08556B" stroke-width="2"/>
+                        <!-- Drum Body (Gold/Yellow) -->
+                        <path d="M35 32 L65 32 L60 58 L40 58 Z" fill="#DF9E28" stroke="#08556B" stroke-width="2"/>
+                        <!-- Drum Skin / Top -->
+                        <ellipse cx="50" cy="32" rx="15" ry="4" fill="#FAF6F0" stroke="#08556B" stroke-width="2"/>
+                        <!-- Drum Strings/Carvings (Zig Zag) -->
+                        <path d="M35 32 L45 58 M42 32 L50 58 M50 32 L50 58 M58 32 L55 58 M65 32 L60 58" stroke="#08556B" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xs uppercase tracking-wider text-brand-teal leading-none">Midrand Arts, Culture &</span>
+                    <span class="font-black text-sm tracking-wide text-brand-terracotta leading-none">Heritage Forum</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center gap-8 font-semibold text-sm">
+                <a href="#about" class="text-brand-dark hover:text-brand-teal transition-colors">Who We Are</a>
+                <a href="#what-we-do" class="text-brand-dark hover:text-brand-teal transition-colors">What We Do</a>
+                <a href="#funding-hub" class="text-brand-teal hover:text-brand-terracotta transition-colors flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-brand-terracotta animate-ping"></span>
+                    Funding Hub
+                </a>
+                <a href="#documentation" class="text-brand-dark hover:text-brand-teal transition-colors">NPO Compliance</a>
+                <a href="#contact" class="text-brand-dark hover:text-brand-teal transition-colors">Contact</a>
+            </nav>
+
+            <!-- CTA Desktop Button -->
+            <div class="hidden md:flex items-center gap-4">
+                <button @click="selectedTier = 'Custom'; pledgeAmount = 5000; pledgeModal = true" class="bg-brand-terracotta hover:bg-brand-terracotta/90 text-white font-bold py-2.5 px-5 rounded-full text-sm transition-all transform hover:-translate-y-0.5 shadow-md shadow-brand-terracotta/10">
+                    Sponsor Our Work
+                </button>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button @click="mobileMenu = !mobileMenu" class="md:hidden text-brand-teal p-2 focus:outline-none">
+                <svg x-show="!mobileMenu" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+                <svg x-show="mobileMenu" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-cloak>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" @click.away="mobileMenu = false" class="md:hidden bg-brand-cream border-t border-brand-teal/10 shadow-lg px-4 pt-2 pb-6 space-y-3" x-transition x-cloak>
+            <a href="#about" @click="mobileMenu = false" class="block py-2 font-semibold text-brand-dark hover:text-brand-teal">Who We Are</a>
+            <a href="#what-we-do" @click="mobileMenu = false" class="block py-2 font-semibold text-brand-dark hover:text-brand-teal">What We Do</a>
+            <a href="#funding-hub" @click="mobileMenu = false" class="block py-2 font-semibold text-brand-teal">Funding Hub (Active)</a>
+            <a href="#documentation" @click="mobileMenu = false" class="block py-2 font-semibold text-brand-dark hover:text-brand-teal">NPO Compliance</a>
+            <a href="#contact" @click="mobileMenu = false" class="block py-2 font-semibold text-brand-dark hover:text-brand-teal">Contact</a>
+            <button @click="mobileMenu = false; selectedTier = 'Custom'; pledgeAmount = 2500; pledgeModal = true" class="w-full text-center bg-brand-terracotta hover:bg-brand-terracotta/90 text-white font-bold py-3 px-5 rounded-xl text-sm transition-all block">
+                Sponsor Our Work
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative overflow-hidden pt-12 pb-20 md:py-28 bg-gradient-to-b from-brand-cream to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid md:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left -->
+                <div class="md:col-span-7 space-y-6 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 bg-brand-teal/10 text-brand-teal font-semibold text-xs uppercase tracking-wider py-1.5 px-3 rounded-full">
+                        <span class="w-2 h-2 rounded-full bg-brand-teal"></span>
+                        Est. April 2010 • Active for 16 Years
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif text-brand-teal font-bold leading-tight">
+                        Empowering Youth, <span class="text-brand-terracotta italic">Preserving</span> Heritage.
+                    </h1>
+                    <p class="text-lg text-gray-700 leading-relaxed max-w-2xl">
+                        Midrand Arts, Culture & Heritage Forum is a registered NPO using arts and heritage to foster youth empowerment, social cohesion, and community development in Ivory Park and broader Midrand. 
+                    </p>
+                    <p class="text-base text-gray-600 font-medium">
+                        👉 <span class="text-brand-terracotta font-bold">How you can help:</span> We are currently seeking funding partners to help pay dedicated community facilitators, support emerging artists, and scale our high-impact youth workshops.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
+                        <a href="#funding-hub" class="bg-brand-teal hover:bg-brand-teal/95 text-white font-bold py-3.5 px-8 rounded-full text-base transition-all text-center shadow-lg shadow-brand-teal/20">
+                            Partner / Fund Us
+                        </a>
+                        <a href="#what-we-do" class="border-2 border-brand-teal/30 hover:border-brand-teal text-brand-teal font-bold py-3.5 px-8 rounded-full text-base transition-all text-center">
+                            Explore Our Programs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Right -->
+                <div class="md:col-span-5 relative">
+                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-brand-gold/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-brand-terracotta/10 rounded-full blur-2xl"></div>
+                    
+                    <!-- Decorative Panel -->
+                    <div class="relative bg-white border border-brand-teal/10 rounded-2xl p-6 sm:p-8 shadow-xl">
+                        <div class="absolute -top-5 -right-3 bg-brand-gold text-white p-3 rounded-xl shadow-lg transform rotate-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+
+                        <h3 class="font-serif text-2xl text-brand-teal font-bold mb-6">Our Impact Roadmap</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal font-bold shrink-0">
+                                    01
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">16 Years of Local Presence</h4>
+                                    <p class="text-xs text-gray-500">Established in April 2010, deep local roots in Ivory Park, Gauteng.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-brand-terracotta/10 flex items-center justify-center text-brand-terracotta font-bold shrink-0">
+                                    02
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">Direct Youth Support</h4>
+                                    <p class="text-xs text-gray-500">Equipping emerging creative practitioners with real technical and business skills.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold font-bold shrink-0">
+                                    03
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">100% Transparent Use of Funds</h4>
+                                    <p class="text-xs text-gray-500">Audited financial accountability, compliance-ready reports for all funders.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-xs font-semibold text-gray-400">REGISTERED NPO NUMBER</span>
+                            <span class="text-sm font-bold bg-brand-teal/5 text-brand-teal py-1 px-3 rounded-md">NPO 078-332</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK FACTSHEET -->
+    <section id="about" class="bg-brand-teal text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="border-l-4 border-brand-gold pl-4">
+                    <p class="text-xs text-brand-gold/80 font-bold uppercase tracking-wider">Organisation Name</p>
+                    <p class="text-lg font-bold">Midrand Arts, Culture & Heritage Forum</p>
+                </div>
+                <div class="border-l-4 border-brand-gold pl-4">
+                    <p class="text-xs text-brand-gold/80 font-bold uppercase tracking-wider">Established</p>
+                    <p class="text-lg font-bold">April 2010</p>
+                </div>
+                <div class="border-l-4 border-brand-gold pl-4">
+                    <p class="text-xs text-brand-gold/80 font-bold uppercase tracking-wider">Legal Status</p>
+                    <p class="text-lg font-bold">Non-Profit Organisation (078-332)</p>
+                </div>
+                <div class="border-l-4 border-brand-gold pl-4">
+                    <p class="text-xs text-brand-gold/80 font-bold uppercase tracking-wider">Location</p>
+                    <p class="text-base font-medium">Municipal Facility, Ivory Park Ext 6, Midrand, Gauteng</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSION & PURPOSE -->
+    <section class="py-16 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-10">
+            <div class="max-w-3xl mx-auto space-y-4">
+                <span class="text-brand-terracotta text-sm uppercase tracking-widest font-black">Our Foundations</span>
+                <h2 class="text-3xl md:text-4xl font-serif text-brand-teal font-bold">Driving Real Community Cohesion</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Mission Card -->
+                <div class="bg-brand-cream border border-brand-teal/10 rounded-2xl p-8 text-left space-y-4 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 bg-brand-teal text-white rounded-xl flex items-center justify-center font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-teal">Our Mission Statement</h3>
+                    <p class="text-gray-700 leading-relaxed font-medium">
+                        "To use arts, culture, and heritage as tools for community development, youth empowerment, and social cohesion."
+                    </p>
+                </div>
+
+                <!-- Purpose Card -->
+                <div class="bg-brand-cream border border-brand-teal/10 rounded-2xl p-8 text-left space-y-4 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 bg-brand-terracotta text-white rounded-xl flex items-center justify-center font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-terracotta">Our Purpose</h3>
+                    <p class="text-gray-700 leading-relaxed font-medium">
+                        "To build a vibrant, creative, and inclusive community through arts, culture, and heritage."
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-brand-teal/5 border-l-4 border-brand-teal rounded-r-xl p-6 text-left max-w-4xl mx-auto">
+                <p class="text-brand-teal font-semibold italic text-base md:text-lg">
+                    "We believe in building a vibrant, inclusive, and creative community through collaborative programming, cultural celebration, and legacy-driven initiatives."
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-bold uppercase tracking-widest">— Key Stakeholders & Partners Statement</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT WE DO SECTION -->
+    <section id="what-we-do" class="py-16 md:py-24 bg-brand-cream/40 border-y border-brand-teal/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+                <span class="text-brand-teal text-sm uppercase tracking-widest font-black">Our Action Areas</span>
+                <h2 class="text-3xl md:text-4xl font-serif text-brand-teal font-bold">What We Deliver to the Community</h2>
+                <p class="text-gray-600">Our structured programs address critical developmental, training, and social challenges faced by youth and emerging creatives in Gauteng.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Box 1 -->
+                <div class="bg-white border border-brand-teal/5 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal">🎨</div>
+                        <h3 class="text-xl font-bold text-brand-teal">Community Arts Development</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">Opening up cultural access. Establishing workshops and training avenues for visual, performing, and musical arts in local neighborhoods.</p>
+                    </div>
+                </div>
+
+                <!-- Box 2 -->
+                <div class="bg-white border border-brand-teal/5 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-terracotta/10 flex items-center justify-center text-brand-terracotta">🚀</div>
+                        <h3 class="text-xl font-bold text-brand-terracotta">Support for Emerging Artists</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">Providing incubation, professional mentorship, showcase opportunities, and connection to creative industries for career growth.</p>
+                    </div>
+                </div>
+
+                <!-- Box 3 -->
+                <div class="bg-white border border-brand-teal/5 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold">🌍</div>
+                        <h3 class="text-xl font-bold text-brand-teal">Cultural & Heritage Preservation</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">Documenting, celebrating, and sustaining indigenous knowledge systems, local heritage landmarks, and traditional practices.</p>
+                    </div>
+                </div>
+
+                <!-- Box 4 -->
+                <div class="bg-white border border-brand-teal/5 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal">🎓</div>
+                        <h3 class="text-xl font-bold text-brand-teal">Skills & Youth Empowerment</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">Running computer literacy, creative writing, digital media production, and arts business management courses for out-of-school youth.</p>
+                    </div>
+                </div>
+
+                <!-- Box 5 -->
+                <div class="bg-white border border-brand-teal/5 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-terracotta/10 flex items-center justify-center text-brand-terracotta">🎉</div>
+                        <h3 class="text-xl font-bold text-brand-terracotta">Events & Performances</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">Hosting neighborhood festivals, exhibitions, poetry slams, and theatrical shows that bring people together and boost local economic activity.</p>
+                    </div>
+                </div>
+
+                <!-- Box 6 -->
+                <div class="bg-white border border-brand-teal/5 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center text-brand-gold">🏢</div>
+                        <h3 class="text-xl font-bold text-brand-teal">NPO & Org Development</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">Offering guidance, training, and operational support to other nascent grassroots culture clubs on regulatory compliance and funding.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE FUNDING & SPONSOR HUB -->
+    <section id="funding-hub" class="py-16 md:py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid md:grid-cols-12 gap-12 items-center">
+                
+                <!-- Info Panel -->
+                <div class="md:col-span-6 space-y-6">
+                    <span class="text-brand-terracotta text-sm uppercase tracking-widest font-black">Funder & Supporter Portal</span>
+                    <h2 class="text-3xl md:text-4xl font-serif text-brand-teal font-bold leading-tight">Help Us Sustain Our Community Programs</h2>
+                    <p class="text-gray-700 leading-relaxed">
+                        To remain fully operational, the Midrand Arts, Culture & Heritage Forum relies on partnerships with businesses, private philanthropists, and government grants. Your financial assistance supports key infrastructure and human resource needs that are difficult to cover.
+                    </p>
+                    
+                    <div class="space-y-4 bg-brand-cream p-6 rounded-2xl border border-brand-teal/5">
+                        <h4 class="font-bold text-brand-teal text-base">Where Your Sponsorship Goes:</h4>
+                        
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center pb-2 border-b border-brand-teal/10">
+                                <span class="text-gray-600 font-medium">1. Program Facilitator & Staff Stipends</span>
+                                <span class="font-bold text-brand-teal">45%</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-2 border-b border-brand-teal/10">
+                                <span class="text-gray-600 font-medium">2. Workshop Materials & Equipment (Art/Sound)</span>
+                                <span class="font-bold text-brand-teal">25%</span>
+                            </div>
+                            <div class="flex justify-between items-center pb-2 border-b border-brand-teal/10">
+                                <span class="text-gray-600 font-medium">3. Event Hosting & Artists Transport stipends</span>
+                                <span class="font-bold text-brand-teal">15%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 font-medium">4. Admin & Municipal Facility Overhead upkeep</span>
+                                <span class="font-bold text-brand-teal">15%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-gold/10 p-4 rounded-xl border border-brand-gold/20 flex gap-3 items-start">
+                        <span class="text-xl">💡</span>
+                        <p class="text-xs text-gray-700 leading-relaxed">
+                            <strong>Corporate Funders:</strong> We are a fully verified, tax-compliant Non-Profit Organisation (NPO). We are happy to coordinate Section 18A tax-deductible certificates for high-value donors and provide formal financial reporting.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interactive Pledge Calculator -->
+                <div class="md:col-span-6">
+                    <div class="bg-brand-cream border border-brand-teal/20 rounded-3xl p-6 sm:p-8 shadow-xl relative">
+                        
+                        <div class="absolute top-4 right-4 bg-brand-teal text-white text-xs py-1 px-3.5 rounded-full font-bold">
+                            Live Pledge Form
+                        </div>
+
+                        <h3 class="text-xl font-bold text-brand-teal mb-2">Pledge Your Support</h3>
+                        <p class="text-sm text-gray-500 mb-6">Select a standard sponsorship tier or input a custom donation amount.</p>
+
+                        <div class="grid grid-cols-3 gap-3 mb-6">
+                            <button @click="selectedTier = 'Starter'; pledgeAmount = 500" 
+                                    :class="selectedTier === 'Starter' ? 'border-brand-teal bg-brand-teal text-white' : 'border-gray-200 bg-white text-gray-700'"
+                                    class="border-2 py-3 px-2 rounded-xl text-center transition-all cursor-pointer">
+                                <span class="block text-xs uppercase tracking-wider font-bold">Starter</span>
+                                <span class="text-base font-extrabold">R 500</span>
+                            </button>
+                            
+                            <button @click="selectedTier = 'Growth'; pledgeAmount = 2500" 
+                                    :class="selectedTier === 'Growth' ? 'border-brand-teal bg-brand-teal text-white' : 'border-gray-200 bg-white text-gray-700'"
+                                    class="border-2 py-3 px-2 rounded-xl text-center transition-all cursor-pointer">
+                                <span class="block text-xs uppercase tracking-wider font-bold">Community</span>
+                                <span class="text-base font-extrabold">R 2.5k</span>
+                            </button>
+
+                            <button @click="selectedTier = 'Patron'; pledgeAmount = 10000" 
+                                    :class="selectedTier === 'Patron' ? 'border-brand-teal bg-brand-teal text-white' : 'border-gray-200 bg-white text-gray-700'"
+                                    class="border-2 py-3 px-2 rounded-xl text-center transition-all cursor-pointer">
+                                <span class="block text-xs uppercase tracking-wider font-bold">Patron</span>
+                                <span class="text-base font-extrabold">R 10k</span>
+                            </button>
+                        </div>
+
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between text-sm font-semibold text-gray-700">
+                                <span>Custom Amount:</span>
+                                <span class="text-brand-terracotta text-lg font-bold">R <span x-text="pledgeAmount"></span></span>
+                            </div>
+                            <input type="range" min="100" max="50000" step="100" x-model="pledgeAmount" @input="selectedTier = 'Custom'" class="w-full accent-brand-teal">
+                            <div class="flex justify-between text-[10px] text-gray-400 font-bold uppercase">
+                                <span>Min: R100</span>
+                                <span>Max: R50,000+</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl border border-brand-teal/5 mb-6 text-sm text-gray-700">
+                            <span class="font-bold text-brand-teal">Estimated Impact:</span>
+                            <span x-show="pledgeAmount < 1000">Helps provide creative materials and snacks for 10 youths at a weekend workshop.</span>
+                            <span x-show="pledgeAmount >= 1000 && pledgeAmount < 5000">Covers essential art/production supplies for local youths for an entire month.</span>
+                            <span x-show="pledgeAmount >= 5000 && pledgeAmount < 15000">Sponsors a community artist-facilitator's travel and stipend to run weekly heritage training.</span>
+                            <span x-show="pledgeAmount >= 15000">Allows us to host a local street-theatre/music festival, empowering up to 50 emerging performers!</span>
+                        </div>
+
+                        <button @click="pledgeModal = true" class="w-full bg-brand-terracotta hover:bg-brand-terracotta/95 text-white font-bold py-4 rounded-xl text-center transition-all shadow-md shadow-brand-terracotta/20 cursor-pointer">
+                            Submit Financial Support Pledge
+                        </button>
+                        
+                        <p class="text-[11px] text-gray-400 text-center mt-3">By clicking, you pledge your support intention. Our team will contact you to facilitate secure payment.</p>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- NPO COMPLIANCE & LEGAL DOCUMENTS -->
+    <section id="documentation" class="py-16 bg-brand-cream border-t border-brand-teal/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
+                <span class="text-brand-teal text-sm uppercase tracking-widest font-black">Audit & Governance</span>
+                <h2 class="text-3xl md:text-4xl font-serif text-brand-teal font-bold">NPO Compliance Documentation</h2>
+                <p class="text-gray-600">We operate with absolute financial integrity. Download or inspect our credentials below for vetting purposes.</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                <!-- Cert 1 -->
+                <div class="bg-white p-6 rounded-xl border border-brand-teal/5 flex flex-col justify-between items-start space-y-4">
+                    <span class="text-2xl">📜</span>
+                    <div>
+                        <h4 class="font-bold text-brand-teal">NPO Certificate</h4>
+                        <p class="text-xs text-gray-500">Official Registration document from Dept of Social Development.</p>
+                    </div>
+                    <button @click="alert('This is a demo website. On a live server, this button will download the PDF of NPO Certificate 078-332.')" class="text-xs font-bold text-brand-terracotta hover:underline flex items-center gap-1">
+                        Download Copy &rarr;
+                    </button>
+                </div>
+
+                <!-- Cert 2 -->
+                <div class="bg-white p-6 rounded-xl border border-brand-teal/5 flex flex-col justify-between items-start space-y-4">
+                    <span class="text-2xl">🏛️</span>
+                    <div>
+                        <h4 class="font-bold text-brand-teal">Section 18A Status</h4>
+                        <p class="text-xs text-gray-500">SARS Tax-Exemption clearance document for corporate sponsors.</p>
+                    </div>
+                    <button @click="alert('This is a demo website. On a live server, this button will download the Section 18A tax status details.')" class="text-xs font-bold text-brand-terracotta hover:underline flex items-center gap-1">
+                        Download Copy &rarr;
+                    </button>
+                </div>
+
+                <!-- Cert 3 -->
+                <div class="bg-white p-6 rounded-xl border border-brand-teal/5 flex flex-col justify-between items-start space-y-4">
+                    <span class="text-2xl">📈</span>
+                    <div>
+                        <h4 class="font-bold text-brand-teal">Annual Report Summary</h4>
+                        <p class="text-xs text-gray-500">Overview of recent milestones, beneficiary numbers, and outcomes.</p>
+                    </div>
+                    <button @click="alert('This is a demo website. On a live server, this will download the latest annual activities report.')" class="text-xs font-bold text-brand-terracotta hover:underline flex items-center gap-1">
+                        Download Copy &rarr;
+                    </button>
+                </div>
+
+                <!-- Cert 4 -->
+                <div class="bg-white p-6 rounded-xl border border-brand-teal/5 flex flex-col justify-between items-start space-y-4">
+                    <span class="text-2xl">💼</span>
+                    <div>
+                        <h4 class="font-bold text-brand-teal">MACH Forum Constitution</h4>
+                        <p class="text-xs text-gray-500">Founding document detailing governance structure and directives.</p>
+                    </div>
+                    <button @click="alert('This is a demo website. On a live server, this will download the official constitution document.')" class="text-xs font-bold text-brand-terracotta hover:underline flex items-center gap-1">
+                        Download Copy &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT & LOCATION -->
+    <section id="contact" class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12">
+                
+                <div class="space-y-6">
+                    <span class="text-brand-terracotta text-sm uppercase tracking-widest font-black">Reach Out</span>
+                    <h2 class="text-3xl font-serif text-brand-teal font-bold">Contact Our Office</h2>
+                    <p class="text-gray-600">Want to schedule a visit to our center, volunteer your skills, or meet our committee board? Let us know.</p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <span class="text-brand-teal font-bold">📍 Location:</span>
+                            <p class="text-gray-700">Municipal Facility, Ivory Park Ext 6, Midrand, Gauteng, 1685</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-brand-teal font-bold">📧 Email:</span>
+                            <p class="text-gray-700">info@midrandartsheritage.org.za / machforum@gmail.com</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-brand-teal font-bold">📞 Phone:</span>
+                            <p class="text-gray-700">+27 (0)11 805 1234 / +27 (0)72 555 9876</p>
+                        </div>
+                    </div>
+
+                    <div class="w-full h-48 bg-brand-cream border border-brand-teal/10 rounded-2xl relative overflow-hidden flex items-center justify-center p-6 text-center">
+                        <div class="absolute inset-0 bg-opacity-20 bg-[radial-gradient(#08556b_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                        <div class="relative z-10 space-y-2">
+                            <p class="font-bold text-brand-teal">Ivory Park Ext 6 Municipal Facility</p>
+                            <p class="text-xs text-gray-500">Midrand, Gauteng, South Africa</p>
+                            <span class="inline-block bg-brand-teal text-white text-[10px] uppercase font-bold tracking-widest py-1 px-3 rounded-full">Primary Hub Base</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-cream border border-brand-teal/10 p-8 rounded-3xl">
+                    <h3 class="text-xl font-bold text-brand-teal mb-4">Send a Message</h3>
+                    
+                    <form @submit.prevent="alert('Thank you for contacting Midrand Arts, Culture & Heritage Forum. We have received your message and will respond within 24 hours!')" class="space-y-4 text-sm">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-1">Your Name / Organization</label>
+                            <input type="text" required class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal" placeholder="e.g. Acme Foundation">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Email Address</label>
+                                <input type="email" required class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal" placeholder="e.g. name@company.com">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Phone Number</label>
+                                <input type="tel" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal" placeholder="e.g. +27 72 345 6789">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-1">Inquiry Type</label>
+                            <select class="w-full p-3 rounded-xl border border-gray-300 bg-white focus:outline-brand-teal">
+                                <option>General Sponsorship / Funding</option>
+                                <option>Schedule Site Visit</option>
+                                <option>Join as an Emerging Artist</option>
+                                <option>General Inquiry</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-1">Your Message</label>
+                            <textarea required rows="4" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal" placeholder="Please share details on how you would like to collaborate or assist..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-brand-teal hover:bg-brand-teal/95 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                            Send Secure Inquiry
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-white py-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-sm text-gray-400">
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center bg-white/10">
+                        <svg viewBox="0 0 100 100" class="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="42" stroke="#ffffff" stroke-width="2"/>
+                            <path d="M40 75 L60 75 L55 58 L45 58 Z" fill="#B25329" stroke="#ffffff" stroke-width="2"/>
+                            <path d="M35 32 L65 32 L60 58 L40 58 Z" fill="#DF9E28" stroke="#ffffff" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <span class="font-bold text-white tracking-wider">MACH Forum</span>
+                </div>
+                <p>Protecting the arts, preserving historical heritage, and guiding our youth to bright careers since 2010.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase text-xs tracking-wider">Focus Areas</h4>
+                <ul class="space-y-2">
+                    <li><a href="#what-we-do" class="hover:text-white transition-colors">Youth Arts Training</a></li>
+                    <li><a href="#what-we-do" class="hover:text-white transition-colors">Heritage Celebrations</a></li>
+                    <li><a href="#what-we-do" class="hover:text-white transition-colors">Cooperative NPO Mentoring</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase text-xs tracking-wider">Legal Details</h4>
+                <p>NPO Reg: 078-332<br>Tax Exemption Section 18A Status Pending/Active<br>Ivory Park, Midrand, Gauteng</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase text-xs tracking-wider font-semibold">Ready to Support?</h4>
+                <p class="mb-4">Help us directly unlock youth opportunities in South Africa.</p>
+                <button @click="selectedTier = 'Custom'; pledgeAmount = 5000; pledgeModal = true" class="bg-brand-terracotta hover:bg-brand-terracotta/90 text-white font-bold py-2 px-4 rounded-lg w-full text-center transition-all text-xs">
+                    Pledge a Donation
+                </button>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-white/5 text-center text-xs text-gray-500">
+            <p>&copy; 2026 Midrand Arts, Culture & Heritage Forum. All Rights Reserved. Designed to support community growth.</p>
+        </div>
+    </footer>
+
+    <!-- PLEDGE MODAL -->
+    <div x-show="pledgeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" x-transition x-cloak>
+        <div class="bg-white border border-brand-teal/20 max-w-lg w-full rounded-3xl p-6 sm:p-8 space-y-6 relative shadow-2xl" @click.away="pledgeModal = false">
+            
+            <button @click="pledgeModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-brand-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="text-center space-y-2">
+                <span class="text-brand-terracotta font-bold text-xs uppercase tracking-widest">Formal Supporter Pledge</span>
+                <h3 class="text-2xl font-serif text-brand-teal font-bold">Secure Support Intent</h3>
+                <p class="text-xs text-gray-500">Submit this form and our committee coordinator will email you the official invoice, NPO certification, and Section 18A tax information.</p>
+            </div>
+
+            <div class="bg-brand-cream p-4 rounded-2xl flex items-center justify-between border border-brand-teal/10">
+                <span class="font-bold text-gray-700">Pledge Level: <span class="text-brand-terracotta" x-text="selectedTier || 'Custom'"></span></span>
+                <span class="text-xl font-black text-brand-teal">R <span x-text="pledgeAmount"></span></span>
+            </div>
+
+            <form @submit.prevent="alert('Thank you for pledging R' + pledgeAmount + '! A formal email invitation has been generated and sent to our management committee. We will contact you directly to complete this support.'); pledgeModal = false" class="space-y-4 text-xs">
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">Sponsor Full Name / Organisation Name *</label>
+                    <input type="text" required class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal text-sm" placeholder="e.g. Standard Bank CSI Group">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Email Address *</label>
+                        <input type="email" required class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal text-sm" placeholder="contact@sponsor.com">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Phone Number *</label>
+                        <input type="tel" required class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal text-sm" placeholder="+27 82 123 4567">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">Special Directives (Optional)</label>
+                    <textarea rows="2" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-brand-teal text-sm" placeholder="e.g. I want these funds specifically allocated for youth poetry events..."></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="flex items-start gap-2 cursor-pointer">
+                        <input type="checkbox" required class="mt-1 rounded text-brand-teal focus:ring-brand-teal">
+                        <span class="text-[10px] text-gray-500 leading-tight">I understand that this is a pledge declaration, and Midrand Arts, Culture & Heritage Forum will coordinate officially to initiate the secure bank transfer.</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full bg-brand-teal hover:bg-brand-teal/95 text-white font-bold py-3 px-6 rounded-xl transition-all text-sm shadow-md">
+                    Confirm Pledge of R<span x-text="pledgeAmount"></span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>
+
+```
